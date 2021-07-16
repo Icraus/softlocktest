@@ -36,6 +36,7 @@ void TestCrypto::testEncrpyt()
     auto dec = cryptoInstance.decrypt(output, key, iv);
     qDebug() << QString(dec.c_str()) << Qt::endl;
     QVERIFY("Hello World" ==  dec);
+    ///home/user/SoftLockProject/SoftLockUI/test
 
 }
 

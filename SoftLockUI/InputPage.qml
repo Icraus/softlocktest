@@ -20,11 +20,13 @@ Page {
             anchors.leftMargin: 10
             spacing: 2
             LabeledText{
+                id: keyTextBox
                 Layout.preferredHeight: 30
                 Layout.fillWidth: true
                 label: qsTr("Key")
             }
             LabeledText{
+                id: ivTextBox
                 Layout.preferredHeight: 30
                 Layout.fillWidth: true
                 label: qsTr("iv")
@@ -34,11 +36,11 @@ Page {
                 id: inputfilePathTextBox
                 Layout.preferredHeight: 30
                 Layout.fillWidth: true
-                label: qsTr("File Path")
+                label: qsTr("Input file path")
                 Button{
                     text: qsTr("Browse.")
                     onClicked: {
-                        fileDialog.open()
+                        inputFileDialog.open()
                     }
                 }
             }
@@ -46,37 +48,58 @@ Page {
                 id: outputfilePathTextBox
                 Layout.preferredHeight: 30
                 Layout.fillWidth: true
-                label: qsTr("File Path")
-                text: fileDialog.fileUrl
+                label: qsTr("Output file path")
                 Button{
                     text: qsTr("Browse.")
                     onClicked: {
-                        fileDialog.open()
+                        outputFileDialog.open()
                     }
                 }
             }
             RowLayout{
                 Button{
-                    text: qsTr("Encrpyt File.")
+                    action: encryptAction
                 }
                 Button{
-                    text: qsTr("Decrpyt File.")
+                    action: decryptAction
                 }
             }
         }
 
-        FileDialog {
-            id: fileDialog
-            title: "Please choose a file."
-            folder: shortcuts.home
-            onAccepted: {
-
-            }
-            onRejected: {
-            }
-        }
 
     }
+    Action{
+        id: encryptAction
+        text: qsTr("&Encrypt")
+        onTriggered: {
+            crypto.encryptFile(inputfilePathTextBox.text, outputfilePathTextBox.text
+                           , keyTextBox, ivTextBox)
+        }
+    }
+    Action{
+        id: decryptAction
+        text: qsTr("&Decrypt")
+        onTriggered: {
+            crypto.decryptFile(inputfilePathTextBox.text, outputfilePathTextBox.text
+                           , keyTextBox, ivTextBox)
+        }
+    }
+    FileDialog {
+        id: inputFileDialog
+        title: qsTr("Choose a file to encyrpt.")
+        folder: shortcuts.home
+        onAccepted: {
+            inputfilePathTextBox.text = fileUrl
 
-
+        }
+    }
+    FileDialog {
+        id: outputFileDialog
+        title: qsTr("Save.")
+        folder: shortcuts.home
+        selectExisting: false
+        onAccepted: {
+           outputfilePathTextBox.text = fileUrl
+        }
+    }
 }

@@ -20,4 +20,12 @@ protected:
     Crypto();
 };
 
+
+struct AESException: public std::exception{
+    std::string message;
+    AESException(std::string msg): exception(), message{msg}{
+
+    }
+};
+
 #endif // SOFTCRYPTO_H

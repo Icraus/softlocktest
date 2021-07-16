@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.15
-
+import QtQuick.Layouts 1.15
 ApplicationWindow {
     width: 640
     height: 480
@@ -8,6 +8,11 @@ ApplicationWindow {
     title: qsTr("Tabs")
     Connections{
         target: crypto
+        function onState(progress, message){
+            operationProgressBar.value = (progress / 100.0);
+            statusText.text = message
+        }
+
         function onError(errorMessage){
             console.log(errorMessage);
         }
@@ -16,26 +21,23 @@ ApplicationWindow {
     SwipeView {
         id: swipeView
         anchors.fill: parent
-        currentIndex: tabBar.currentIndex
-
         InputPage {
-            mtitle: "kyasd"
+            mtitle: qsTr("SoftLock")
         }
 
     }
 
-    footer: TabBar {
-        id: tabBar
-        currentIndex: swipeView.currentIndex
-
-        TabButton {
-            text: qsTr("Page 1")
-            onClicked: {
-                crypto.error("Errdasdasdadador")
-            }
+    footer: ColumnLayout{
+        spacing: 5
+        ProgressBar {
+            id: operationProgressBar
+            value: 0
+            Layout.fillWidth: true
         }
-        TabButton {
-            text: qsTr("Page 2")
+        Label{
+            id: statusText
+            text: qsTr("idle.")
+            Layout.fillWidth: true
         }
     }
 }

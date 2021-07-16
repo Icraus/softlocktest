@@ -8,7 +8,7 @@
 #include <memory>
 
 
-const unsigned char* to_uchar_str(const std::string& value){
+inline const unsigned char* to_uchar_str(const std::string& value) noexcept{
     return reinterpret_cast<unsigned char*>(const_cast<char*>(value.c_str()));
 }
 Crypto::Crypto()
@@ -48,7 +48,7 @@ std::string Crypto::encrypt(const std::string& plainText, const std::string& key
 void Crypto::handleErrors() const
 {
     ERR_print_errors_fp(stderr);
-    abort();
+    throw AESException("Error Bad Encrypted file");
 }
 std::string Crypto::decrypt(const std::string& ciphertext, const std::string& key, const std::string& iv) const
 {
