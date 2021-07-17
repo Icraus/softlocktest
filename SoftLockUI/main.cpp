@@ -13,7 +13,9 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QCrpytoAdaptor adaptor(&app);
     QQmlApplicationEngine engine;
-
+    app.setOrganizationName("SoftLock");
+    app.setOrganizationDomain("SoftLock.com");
+    app.setApplicationName("SoftLock");
 
     engine.rootContext()->setContextProperty("crypto", &adaptor);
     const QUrl url(QStringLiteral("qrc:/main.qml"));

@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.0
+import Qt.labs.settings 1.0
 
 Page {
     width: 600
@@ -101,5 +102,11 @@ Page {
         onAccepted: {
            outputfilePathTextBox.text = fileUrl
         }
+    }
+    Settings{
+        property alias key: keyTextBox.text
+        property alias inputFile: inputfilePathTextBox.text
+        property alias outputFile: outputfilePathTextBox.text
+        property alias iv: ivTextBox.text
     }
 }

@@ -14,20 +14,27 @@ void QCrpytoAdaptor::applyFunctionOnFile(std::function<std::string (std::string,
     auto output = lambdaF(file.readAll().toStdString(), key.toStdString(), iv.toStdString());
     status += 20;
     emit state(status, tr("Finished Applying changes to content."));
-    QFile outputFileHandler(outputFile);
-    if(!outputFileHandler.open(QIODevice::WriteOnly)){
-        emit error(tr("Error while opening file: %1 for writing").arg(inputFile));
-    }
-    status += 20;
-    emit state(status, tr("Writing result to file: %1.").arg(output.c_str()));
-    outputFileHandler.write(output.c_str());
+
     emit state(100, tr("Finished..."));
 }
 
 void QCrpytoAdaptor::encryptFile(const QString& inputFile, const QString& outputFile, const QString& key, const QString& iv){
     auto cryptoInstance = Crypto::getInstance();
     try {
-        applyFunctionOnFile(std::bind(&Crypto::encrypt, cryptoInstance, _1,_2, _3), inputFile, outputFile, key, iv);
+        auto f = [&](std::string a, std::string b, std::string c){
+             auto out = cryptoInstance.encrypt(a, b, c);
+             auto handler = fopen(outputFile.toStdString().c_str(), "wb");
+             if(!handler){
+                 emit error(tr("Error while opening file: %1 for writing").arg(inputFile));
+             }
+             emit state(80, tr("Writing result to file: %1.").arg(outputFile));
+             cryptoInstance.writeToFile(handler, out);
+             fclose(handler);
+             return out;
+
+        };
+
+        applyFunctionOnFile(f, inputFile, outputFile, key, iv);
     }  catch (const AESException& ex) {
         emit error(tr("Error encrypting file: %1 %2").arg(inputFile).arg(ex.message.c_str()));
     }
@@ -36,7 +43,18 @@ void QCrpytoAdaptor::encryptFile(const QString& inputFile, const QString& output
 void QCrpytoAdaptor::decryptFile(const QString& inputFile, const QString& outputFile, const QString& key, const QString& iv){
     auto cryptoInstance = Crypto::getInstance();
     try{
-        applyFunctionOnFile(std::bind(&Crypto::decrypt, cryptoInstance, _1,_2, _3), inputFile, outputFile, key, iv);
+        auto f = [&](std::string a, std::string b, std::string c){
+             auto out = cryptoInstance.decrypt(a, b, c);
+             QFile handler(outputFile);
+             if(!handler.open(QIODevice::WriteOnly)){
+                 emit error(tr("Error while opening file: %1 for writing").arg(inputFile));
+             }
+             emit state(80, tr("Writing result to file: %1.").arg(outputFile));
+             handler.write(out.c_str());
+             return out;
+
+        };
+        applyFunctionOnFile(f, inputFile, outputFile, key, iv);
     } catch (const AESException& ex) {
         emit error(tr("Error decrypting file: %1 %2").arg(inputFile).arg(ex.message.c_str()));
     }
