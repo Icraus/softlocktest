@@ -30,7 +30,6 @@ else:unix: LIBS += -L$$OUT_PWD/../softcrypto/ -lsoftcrypto
 
 INCLUDEPATH += $$PWD/../softcrypto
 DEPENDPATH += $$PWD/../softcrypto
-
 DISTFILES += \
     test
 

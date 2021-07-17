@@ -74,7 +74,7 @@ Page {
         text: qsTr("&Encrypt")
         onTriggered: {
             crypto.encryptFile(inputfilePathTextBox.text, outputfilePathTextBox.text
-                           , keyTextBox, ivTextBox)
+                           , keyTextBox.text, ivTextBox.text)
         }
     }
     Action{
@@ -82,7 +82,7 @@ Page {
         text: qsTr("&Decrypt")
         onTriggered: {
             crypto.decryptFile(inputfilePathTextBox.text, outputfilePathTextBox.text
-                           , keyTextBox, ivTextBox)
+                           , keyTextBox.text, ivTextBox.text)
         }
     }
     FileDialog {
