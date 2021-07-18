@@ -3,7 +3,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.0
 import Qt.labs.settings 1.0
-
+import com.softlock 1.0
 Page {
     width: 600
     height: 400
@@ -17,6 +17,49 @@ Page {
     ColumnLayout{
         anchors.fill: parent
         spacing: 4
+        GroupBox{
+            Layout.fillWidth: true
+            title: qsTr("Input file")
+            ColumnLayout{
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                spacing: 2
+                LabeledText{
+                    label: qsTr("Extension:")
+                    control: Label{
+                        text: inputFile.extension == ""? qsTr("No Extension") : inputFile.extension
+                    }
+                    Layout.fillWidth: true
+                }
+                LabeledText{
+                    Layout.fillWidth: true
+                    label: qsTr("Size:")
+                    control: Label{
+                        text: inputFile.size
+                    }
+                }
+                LabeledText{
+                    Layout.fillWidth: true
+                    id: inputfilePathTextBox
+                    text: inputFile.filePath
+                    Layout.preferredHeight: 30
+                    label: qsTr("Input file path")
+                    onEditingFinshed: {
+                        inputFile.filePath = text
+                    }
+
+                    Button{
+                        text: qsTr("Browse.")
+                        onClicked: {
+                            inputFileDialog.open()
+                        }
+                    }
+                }
+            }
+
+        }
+
+
         ColumnLayout{
             anchors.leftMargin: 10
             spacing: 2
@@ -31,19 +74,6 @@ Page {
                 Layout.preferredHeight: 30
                 Layout.fillWidth: true
                 label: qsTr("iv")
-            }
-
-            LabeledText{
-                id: inputfilePathTextBox
-                Layout.preferredHeight: 30
-                Layout.fillWidth: true
-                label: qsTr("Input file path")
-                Button{
-                    text: qsTr("Browse.")
-                    onClicked: {
-                        inputFileDialog.open()
-                    }
-                }
             }
             LabeledText{
                 id: outputfilePathTextBox
@@ -90,8 +120,7 @@ Page {
         title: qsTr("Choose a file to encyrpt.")
         folder: shortcuts.home
         onAccepted: {
-            inputfilePathTextBox.text = fileUrl
-
+            inputFile.filePath = fileUrl.toString()
         }
     }
     FileDialog {
@@ -103,6 +132,10 @@ Page {
            outputfilePathTextBox.text = fileUrl
         }
     }
+    FileObject{
+        id: inputFile
+    }
+
     Settings{
         property alias key: keyTextBox.text
         property alias inputFile: inputfilePathTextBox.text

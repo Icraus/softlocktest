@@ -17,6 +17,7 @@ signals:
     void started(int progress);
     void state(int progress, QString state);
     void finished(int progress);
+
 private:
     void applyFunctionOnFile(std::function<std::string(std::string, std::string, std::string)> lambdaF, QString inputFile, QString outputFile, QString key, QString iv);
 public slots:
